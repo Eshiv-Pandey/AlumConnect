@@ -1,0 +1,214 @@
+body{
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  display:flex;
+  flex-direction: column;
+}
+
+.wrapper{
+  display:flex;
+  flex-direction: column;
+}
+
+html,body{
+  height:100%!important;
+}
+
+main{
+  flex:1;
+}
+
+.container{
+  margin:0!important;
+  padding:0!important;
+  min-width:100%;
+  min-height: 100%;
+  overflow-x:hidden;
+  overflow-y:hidden;
+}
+
+/* NAVBAR STYLING */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.7rem !important;
+  color: #1D1D1F !important;
+}
+
+.brand-connect{
+  color:#007AFF;
+}
+
+.navbar-brand svg {
+  width: 38px; /* Adjust based on your design needs */
+  height: 38px;
+  flex-shrink: 0;
+  
+}
+
+
+nav{
+  font-size:1.3rem;
+}
+
+@media (min-width: 992px) {
+  .navbar .container {
+      position: relative;
+  }
+  
+  .navbar-collapse {
+      position: static;
+  }
+  
+  .navbar-nav {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+  }
+  
+  /* Push the login buttons to the right */
+  .navbar .d-flex {
+      margin-left: auto;
+  }
+}
+
+.nav-link svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  margin-bottom:4px;
+}
+
+/* Login/Signup Button */
+
+.login , .register{
+  font-size:large !important;
+  height:3rem;
+  margin-left:1rem;
+  border-radius:.5rem!important;
+}
+.log-reg{
+  padding-right: 3rem !important;
+}
+.nav-link{
+  color: #1D1D1F!important;
+  font-size:medium !important;
+  font-weight: 500 !important;
+}
+.nav-link:hover{
+  color:#007AFF!important;
+}
+
+/* JOB ICON Styling */
+.nav-link svg path {
+  stroke: #1D1D1F;
+  transition: stroke 0.3s ease;
+}
+
+/* Ensure the SVG remains visible on hover */
+.nav-link:hover svg path {
+  stroke: #007AFF;
+}
+.navbar-brand{
+  font-weight:bold;
+}
+.brand-name{
+  color:#007AFF;
+}
+
+/* ------- FOOTER Styling -------*/
+
+footer {
+    color: #1D1D1F;
+    padding: 3rem 0 1rem;
+    margin:1rem;
+}
+
+footer .content{
+  margin-left:4rem;
+}
+
+footer h5 {
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    color: #1D1D1F;
+    font-size: 1.1rem;
+}
+
+footer ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+footer ul li {
+    margin-bottom: 0.7rem;
+}
+
+footer a {
+    color: #1D1D1F;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #007AFF;
+}
+
+.divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 2rem 0 1.5rem;
+}
+
+.footer-bottom {
+    font-size: 1rem;
+    color: #1D1D1F;
+}
+
+.break{
+  color:#007AFF;
+}
+
+.footer-bottom a {
+    color: #1D1D1F;
+    margin-left: 1rem;
+}
+
+.footer-bottom a:hover {
+  color: #007AFF;
+}
+
+.social-icons {
+    margin-top: 1rem;
+}
+
+.social-icons a {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+footer .navbar-brand svg {
+  width: 28px; /* Adjust based on your design needs */
+  height: 28px;
+  margin-right:1rem;
+}
+
+
+footer .navbar-brand {
+  font-size:20px!important;
+}
+
+footer .brand-connect{
+  color:#1D1D1F;
+}
+
+footer .Alum-footer{
+  color:#007AFF;
+}
+
+footer .navbar-brand svg path {
+  fill: #1D1D1F; /* Your desired color */
+}
+

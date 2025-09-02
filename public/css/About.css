@@ -1,0 +1,178 @@
+.About-Us{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #007AFF 5%, #d5e9ff 100%);
+  color: white;
+  padding: 2rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  
+}
+
+.about h1{
+  font-weight: 800;
+}
+
+.About-Us h1 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 800;
+}
+
+.About-Us h4 {
+  font-size: 1.5rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+
+
+.phase-2 h2{
+  font-weight: 700;
+  font-size:2rem;
+}
+
+.phase-2 p{
+  font-size:1.2rem;
+  color:#4B5563
+}
+
+.phase-2 img{
+  padding-top:4px;
+  margin-left:1rem!important;
+  border-radius:1rem;
+}
+
+.phase-3 .card-body svg path {
+  fill: #1D1D1F; /* Your desired color */
+}
+
+.phase-3 i{
+  transform: scale(1.2);
+}
+svg {
+  width: 38px; /* Adjust based on your design needs */
+  height: 28px;
+  flex-shrink: 0;
+  margin-right:1rem;
+}
+
+.phase-3{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.phase-3 .card{
+  margin:3rem!important;
+  transform: scale(1.1);
+}
+
+.phase-3 h1,.phase-4 h1{
+  font-weight:700;
+}
+
+/* PHASE -4 */
+
+.phase-4{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.phase-4 img{
+  height:200px;
+  width:200px;
+  border-radius:50%;
+  object-fit: cover;
+}
+
+.phase-4 .row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.phase-4 h5{
+  color:#007AFF;
+}
+
+
+.phase-4 .card{
+  border:none;
+  box-shadow: none;
+  text-align: center;
+}
+
+
+/* PHASE-5 */
+.phase-5{
+  display:flex;
+  flex-direction:column;
+  justify-items:center;
+  align-items:center;
+}
+
+.info-item {
+  margin-bottom: 15px;
+}
+
+.info-item i {
+  margin-right: 8px;
+  color: #333;
+}
+
+.info-item .label {
+  font-weight: bold;
+}
+
+.info-item .value {
+  margin-left: 25px; /* aligns with label start */
+  display: block;
+  color: #555;
+}
+
+.phase-5 .card{
+  transform:scale(1.05);
+  margin-top :2rem;
+  margin-right:2rem!important;
+}
+
+.phase-5 h1{
+  font-weight: 700;;
+}
+
+.phase-5 p{
+  font-size:1.2rem;
+}
+
+.phase-5 .row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.phase-5 label{
+  font-weight: 500;
+}
+
+input,textarea{
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #000000;
+  font-size: 1rem;
+}
+
+.phase-5 .cc{
+  border:none;
+  box-shadow: none;
+}
