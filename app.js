@@ -62,7 +62,7 @@ app.use("/jobs", require("./routes/jobs"));
 
 // Root
 app.get("/", (req, res) => {
-  res.send("App is working fine!");
+  res.render("home.ejs");
 });
 
 // MongoDB
