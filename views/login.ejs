@@ -5,50 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AlumConnect</title>
 <link rel="stylesheet" href="/css/login.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 </head>
 <body>
+  <% 
+    // Safe defaults for errors
+    const loginErrorSafe = typeof loginError !== 'undefined' ? loginError : null; 
+    const signupErrorSafe = typeof signupError !== 'undefined' ? signupError : null; 
+    const activeMode = typeof mode !== 'undefined' ? mode : 'login';
+  %>
+
   <div class="wrap">
     <aside class="left">
-      <div class="brand"><h1>AlumConnect</h1></div>
-      <div class="title" id="heroTitle">Welcome Back!</div>
-      <p class="subtitle" id="heroSubtitle">Log in to your account to reconnect with your university network.</p>
+      <div class="brand"><a href="/home" class="alum-logo"><h1>AlumConnect</h1></div></a>
+        <div class="title" id="heroTitle"><%= activeMode === 'signup' ? 'Join AlumConnect' : 'Welcome Back!' %></div>
+        <p class="subtitle" id="heroSubtitle" style="text-decoration: none;">
+        <%= activeMode === 'signup' ? 
+          'Create an account to unlock the power of alumni connections and mentorship.' :
+          'Log in to your account to reconnect with your university network.' %>
+      </p>
       <img class="photo" src="https://images.unsplash.com/photo-1523240795612-9a054b0db644" alt="Library">
     </aside>
 
     <main class="right">
       <div class="card">
         <div class="tabs">
-          <button id="login-tab" class="tab active" type="button" style="width:50%">Log In</button>
-          <button id="signup-tab" class="tab" type="button"style="width:50%">Sign Up</button>
+          <button id="login-tab" class="tab <%= activeMode === 'login' ? 'active' : '' %>" type="button" style="width:50%">Log In</button>
+          <button id="signup-tab" class="tab <%= activeMode === 'signup' ? 'active' : '' %>" type="button" style="width:50%">Sign Up</button>
         </div>
 
-        <!-- LOGIN -->
-        <div id="error-box" style="display:none; color:red; font-weight:bold;"></div>
-        <form id="login-form" class="form active" action="/login" method="post" novalidate>
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="form <%= activeMode === 'login' ? 'active' : '' %>" action="/login" method="post" novalidate>
+          <div id="login-error-box" style="color:red;font-weight:bold;">
+            <% if (loginErrorSafe) { %>
+              <%= loginErrorSafe %>
+            <% } %>
+          </div>
+
           <label>Email Address</label>
           <input type="email" name="email" placeholder="you@example.com" required>
           <label>Password</label>
-          
-          
           <input type="password" name="password" placeholder="••••••••" required>
           <button class="btn" type="submit">Log In</button>
-          
+
           <a class="link" href="/forgot">Forgot your password?</a>
           <div class="divider">Or continue with</div>
           <div class="social">
             <a href="/auth/google">
-              <button class="sbtn" type="button">Google</button>
+              <button class="sbtn" type="button"><i class="fa-brands fa-google"></i>&nbsp;Google</button>
             </a>
             <a href="/auth/github">
-              <button class="sbtn" type="button">GitHub</button>
+              <button class="sbtn" type="button"><i class="fa-brands fa-github"></i>&nbsp;GitHub</button>
             </a>
           </div>
           <a class="link back" href="/">← Back to home</a>
         </form>
 
-        <!-- SIGNUP -->
-        
-        <form id="signup-form" class="form" action="/signup" method="post" novalidate>
+        <!-- SIGNUP FORM -->
+        <form id="signup-form" class="form <%= activeMode === 'signup' ? 'active' : '' %>" action="/signup" method="post" novalidate>
+          <div id="signup-error-box" style="color:red;font-weight:bold;">
+            <% if (signupErrorSafe) { %>
+              <%= signupErrorSafe %>
+            <% } %>
+          </div>
+
           <label>I am a:</label>
           <div class="roles">
             <label>
@@ -65,14 +86,14 @@
           <label>Password</label>
           <input type="password" name="password" placeholder="Create a password" required>
           <button class="btn" type="submit">Create Account</button>
-          
+
           <div class="divider">Or continue with</div>
           <div class="social">
             <a href="/auth/google">
-              <button class="sbtn" type="button">Google</button>
+              <button class="sbtn" type="button"><i class="fa-brands fa-google"></i>&nbsp;Google</button>
             </a>
             <a href="/auth/github">
-              <button class="sbtn" type="button">GitHub</button>
+              <button class="sbtn" type="button"><i class="fa-brands fa-github"></i>&nbsp;GitHub</button>
             </a>
           </div>
           <a class="link back" href="/">← Back to home</a>
@@ -81,9 +102,6 @@
     </main>
   </div>
 
-<script src="/js/script.js">
- 
-
-</script>
+<script src="/js/script.js"></script>
 </body>
 </html>

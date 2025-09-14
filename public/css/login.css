@@ -7,6 +7,12 @@
     --gray: #6b7280;
     --border: #e5e7eb;
   }
+
+  .alum-logo{
+    text-decoration: none!important;
+    color:#111;
+    transform: scale(1.05);
+  }
   
   /* ===============================
      Base Reset & Typography

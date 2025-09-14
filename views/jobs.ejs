@@ -1,41 +1,43 @@
 <% layout("/layouts/boilerplate.ejs") %>
 <div class="row offset-1 jobs">
-    <h2>Job Oppurtunities</h2>
-    <p>Find and share your job oppurtunites within the community</p>
+    <h2>Job Opportunities</h2>
+    <p>Find and share your job opportunities within the community</p>
+    
     <% for(let job of jobs) {%>
-      <div class="col-md-5 card m-2">
-        <div class="card-title">
-          <h5> <%= job.title %> </h5>
-          <span style="color:#4B5563," >
-            <i class="fa-regular fa-building"></i><h6> <%= job.company %> </h6>
-          </span>
-
-          <div style="color:#4B5563">
-            <%= job.location %> 
-          </div>
-          <div class="description">
-            <%= job.description %>
-          </div>
-            <%= job.type %>
-            <ul>
-              <% job.skills.forEach(function(skill) { %>
-                <li><%= skill %></li>
-              <% }) %>
-            </ul>
-            <div>
-              
-              <button class="btn btn-success"><svg width="18px" height="18px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 11C3 9.11438 3 8.17157 3.58579 7.58579C4.17157 7 5.11438 7 7 7H8H16H17C18.8856 7 19.8284 7 20.4142 7.58579C21 8.17157 21 9.11438 21 11V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H16H8H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V11Z" stroke="#323232" stroke-width="2" stroke-linejoin="round"></path>
-                <path d="M8 21V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V21" stroke="#323232" stroke-width="2" stroke-linejoin="round"></path>
-                </svg>Apply Now</button>
+        <div class="col-md-5 job-card m-2">
+            <div class="job-header">
+                <h3 class="job-title"><%= job.title %></h3>
+                <span class="job-type"><%= job.type %></span>
             </div>
-    
-          </p>
-    
+            
+            <div class="company-info">
+                <i class="fa-regular fa-building"></i>
+                <h6 class="company-name"><%= job.company %></h6>
+            </div>
+            
+            <div class="job-location">
+                <%= job.location %>
+            </div>
+            
+            <div class="job-description">
+                <%= job.description %>
+            </div>
+            
+            <div class="skills-container">
+                <% job.skills.forEach(function(skill) { %>
+                    <span class="skill-tag"><%= skill %></span>
+                <% }) %>
+            </div>
+            
+            <div class="apply-section">
+                <button class="apply-btn">
+                    <svg class="apply-icon" width="18px" height="18px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 11C3 9.11438 3 8.17157 3.58579 7.58579C4.17157 7 5.11438 7 7 7H8H16H17C18.8856 7 19.8284 7 20.4142 7.58579C21 8.17157 21 9.11438 21 11V17C21 18.8856 21 19.8284 20.4142 20.4142C19.8284 21 18.8856 21 17 21H16H8H7C5.11438 21 4.17157 21 3.58579 20.4142C3 19.8284 3 18.8856 3 17V11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+                        <path d="M8 21V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V21" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+                    </svg>
+                    Apply Now
+                </button>
+            </div>
         </div>
-      </div>
     <% } %>
-
-    </div>
 </div>
-

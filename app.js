@@ -6,6 +6,7 @@ const ejsMate = require("ejs-mate");
 const cookie = require("cookie-parser");
 const flash = require("connect-flash");
 const dotenv = require("dotenv");
+const helmet=require("helmet");
 const session = require("express-session");
 const passport = require("passport");
 
@@ -17,7 +18,32 @@ dotenv.config();
 const app = express();
 const port = 4000;
 
+//entire security thing
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // turn off if using inline scripts/styles
+  })
+);
+
+// Extra Helmet protections
+app.use(helmet.frameguard({ action: "deny" })); // prevent clickjacking
+app.use(helmet.noSniff()); // prevent MIME sniffing
+app.use(helmet.xssFilter()); // basic XSS protection
+app.use(
+  helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" })
+);
+
+// ✅ Manually add Permissions-Policy (block camera, mic, geolocation)
+app.use((req, res, next) => {
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
+  );
+  next();
+});
+
 // Views
+app.use(express.static("public"));
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -58,7 +84,9 @@ app.use("/about", require("./routes/about"));
 app.use("/contact", require("./routes/contact"));
 app.use("/", require("./routes/user"));
 app.use("/jobs", require("./routes/jobs"));
-
+app.use("/university", require("./routes/university"));
+app.use("/profile",require("./routes/profile"));
+app.use("/profile/editpassword", require("./routes/editpassword"));
 
 // Root
 app.get("/", (req, res) => {

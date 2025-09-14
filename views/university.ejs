@@ -1,0 +1,327 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="container-fluid">
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <div class="search-header">
+        <h1>Universities</h1>
+        <p>Find universities with active alumni communities</p>
+      </div>
+      <div class="search-box">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="8" stroke="#6B7280" stroke-width="2"/>
+          <path d="m21 21-4.35-4.35" stroke="#6B7280" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input 
+          type="text" 
+          id="universitySearch" 
+          placeholder="Search universities..." 
+          onkeyup="searchUniversities()"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- University Cards -->
+  <div class="row">
+    <% for (let uni of universities) { %>
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 mb-4">
+        <div class="university-card" data-uni-id="<%= uni._id %>">
+          <div class="card-image">
+            <img src="<%= uni.image && uni.image.trim() !== '' ? uni.image : '/images/default-university.jpg' %>" 
+                 alt="<%= uni.name %>">
+          </div>
+          
+          <div class="card-content">
+            <h3 class="university-name"><%= uni.name %></h3>
+            <p class="university-location"><%= uni.location %></p>
+            
+            <div class="university-stats">
+              <div class="stat-item">
+                <div class="stat-number"><%= uni.alumnicount %></div>
+                <div class="stat-label">Alumni</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number"><%= uni.studentcount %></div>
+                <div class="stat-label">Students</div>
+              </div>
+            </div>
+
+            <!-- View button -->
+            <button 
+              class="view-university-btn" 
+              data-university='<%- JSON.stringify({
+                _id: uni._id,
+                name: uni.name,
+                location: uni.location,
+                image: (uni.image && uni.image.trim() !== '' ? uni.image : "/images/default-university.jpg"),
+                alumnicount: uni.alumnicount,
+                studentcount: uni.studentcount,
+                about: uni.about || "",
+                programs: uni.programs || []
+              }) %>'
+              onclick="handleViewUniversity(this)"
+            >
+              View University
+            </button>
+          
+            <!-- Optional small joined indicator on card -->
+            <span class="card-joined-indicator" style="margin-left:8px; font-weight:600;" data-joined-for="<%= uni._id %>"></span>
+          
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="universityModal" class="modal-overlay" style="display:none;">
+  <div class="modal-container">
+      <div class="modal-header m-2">
+          <div class="modal-title-section">
+              <h2 id="modalUniversityName"></h2>
+              <p id="modalUniversityLocation"></p>
+          </div>
+          <button class="modal-close-btn" onclick="closeUniversityModal()">✖</button>
+      </div>
+      
+      <div class="modal-content">
+          <div class="modal-image">
+              <img id="modalUniversityImage" src="" alt="University Image">
+          </div>
+          
+          <div class="modal-stats">
+              <div class="modal-stat-item">
+                  <div id="modalalumnicount" class="modal-stat-number"></div>
+                  <div class="modal-stat-label">Alumni</div>
+              </div>
+              <div class="modal-stat-item">
+                  <div id="modalstudentcount" class="modal-stat-number blue"></div>
+                  <div class="modal-stat-label">Students</div>
+              </div>
+          </div>
+          
+          <div class="modal-about">
+              <h3>About <span id="modalAboutTitle"></span></h3>
+              <p id="modalDescription"></p>
+          </div>
+          
+          <div class="modal-programs">
+              <h3>Popular Programs</h3>
+              <div id="modalProgramsList" class="programs-list"></div>
+          </div>
+          
+          <div class="modal-actions">
+              <button class="modal-close-secondary" onclick="closeUniversityModal()">Close</button>
+              <button class="modal-join-btn" id="joinCommunityBtn">Join Community</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  let currentUniversityId = null;
+  let allUniversities = [];
+  // joinedUniversities is injected by server (array of strings)
+  let joinedUniversities = <%- JSON.stringify(joinedUniversities || []) %>;
+  let currentUser = <%- JSON.stringify(currentUser || null) %>;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // prepare search data & show joined indicator on cards
+    allUniversities = Array.from(document.querySelectorAll('.university-card')).map(card => {
+      const button = card.querySelector('.view-university-btn');
+      const data = JSON.parse(button.getAttribute('data-university'));
+      const wrapper = card.parentElement;
+      // set joined indicator text if joined
+      const indicator = wrapper.querySelector('.card-joined-indicator');
+      if (indicator) {
+        indicator.innerText = joinedUniversities.includes(data._id) ? "Joined" : "";
+      }
+      return { element: wrapper, data: data };
+    });
+  });
+
+  // Search functionality
+  function searchUniversities() {
+    const searchTerm = document.getElementById('universitySearch').value.toLowerCase().trim();
+    let visibleCount = 0;
+
+    allUniversities.forEach(uni => {
+      const matchesName = uni.data.name.toLowerCase().includes(searchTerm);
+      const matchesLocation = uni.data.location.toLowerCase().includes(searchTerm);
+      const shouldShow = matchesName || matchesLocation || searchTerm === '';
+
+      if (shouldShow) {
+        uni.element.style.display = 'block';
+        visibleCount++;
+      } else {
+        uni.element.style.display = 'none';
+      }
+    });
+
+    showNoResults(visibleCount === 0 && searchTerm !== '');
+  }
+
+  function showNoResults(show) {
+    let noResultsDiv = document.getElementById('noResults');
+    if (show && !noResultsDiv) {
+      noResultsDiv = document.createElement('div');
+      noResultsDiv.id = 'noResults';
+      noResultsDiv.className = 'col-12 no-results';
+      noResultsDiv.innerHTML = `
+        <h3>No universities found</h3>
+        <p>Try adjusting your search terms or browse all universities.</p>
+      `;
+      document.querySelector('.container-fluid .row').appendChild(noResultsDiv);
+    } else if (!show && noResultsDiv) {
+      noResultsDiv.remove();
+    }
+  }
+
+  // Open modal
+  function handleViewUniversity(button) {
+    try {
+      const data = button.getAttribute('data-university');
+      const uni = JSON.parse(data);
+      openUniversityModal(
+        uni._id, uni.name, uni.location, uni.image,
+        uni.alumnicount, uni.studentcount, uni.about, uni.programs
+      );
+    } catch (err) {
+      console.error('Failed to open university modal:', err);
+      alert('Unable to open university details.');
+    }
+  }
+
+  function openUniversityModal(id, name, location, image, alumnicount, studentcount, about, programs) {
+    currentUniversityId = id;
+
+    // set button state
+    const joinBtn = document.getElementById("joinCommunityBtn");
+    if (joinedUniversities.includes(id)) {
+      joinBtn.innerText = "Joined";
+      joinBtn.disabled = true;
+    } else {
+      joinBtn.innerText = "Join Community";
+      joinBtn.disabled = false;
+    }
+
+    document.getElementById("modalUniversityName").innerText = name || '';
+    document.getElementById("modalUniversityLocation").innerText = location || '';
+    document.getElementById("modalUniversityImage").src = image || '/images/default-university.jpg';
+    document.getElementById("modalalumnicount").innerText = alumnicount ?? '0';
+    document.getElementById("modalstudentcount").innerText = studentcount ?? '0';
+    document.getElementById("modalAboutTitle").innerText = name || '';
+    document.getElementById("modalDescription").innerText = about || 'This is a prestigious university...';
+
+    const programsList = document.getElementById("modalProgramsList");
+    programsList.innerHTML = "";
+    let programArray = [];
+
+    if (Array.isArray(programs)) programArray = programs;
+    else if (typeof programs === 'string' && programs.trim() !== '')
+      programArray = programs.split(',').map(p => p.trim()).filter(Boolean);
+
+    if (programArray.length === 0)
+      programArray = ['Computer Science', 'Business Administration', 'Engineering', 'Medicine'];
+
+    programArray.forEach(p => {
+      const span = document.createElement("span");
+      span.className = "program-tag";
+      span.innerText = p;
+      programsList.appendChild(span);
+    });
+
+    const modal = document.getElementById("universityModal");
+    modal.style.display = "flex";
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => modal.classList.add('show'), 10);
+  }
+
+  function closeUniversityModal() {
+    const modal = document.getElementById("universityModal");
+    modal.classList.remove('show');
+    setTimeout(() => {
+      modal.style.display = "none";
+      document.body.style.overflow = 'auto';
+      currentUniversityId = null;
+    }, 300);
+  }
+
+  document.getElementById('universityModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeUniversityModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('universityModal').classList.contains('show')) {
+      closeUniversityModal();
+    }
+  });
+
+  // Join Community: dynamic URL based on current path
+  document.getElementById("joinCommunityBtn").addEventListener("click", async () => {
+    if (!currentUniversityId) return;
+    const joinBtn = document.getElementById("joinCommunityBtn");
+    joinBtn.innerText = "Joining...";
+    joinBtn.disabled = true;
+
+    // build join URL based on current page path so routing mount point (singular/plural) doesn't break
+    const base = window.location.pathname.replace(/\/$/, '');
+    const joinUrl = `${base}/${encodeURIComponent(currentUniversityId)}/join`;
+
+    try {
+      const res = await fetch(joinUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      // Try parse JSON body (route returns JSON). If status is not ok, show message.
+      const data = await res.json().catch(() => ({ success: false, message: "Invalid server response" }));
+
+      if (res.ok && data.success) {
+        document.getElementById("modalalumnicount").innerText = data.alumnicount ?? '0';
+        document.getElementById("modalstudentcount").innerText = data.studentcount ?? '0';
+        updateCardCounts(currentUniversityId, data.alumnicount, data.studentcount);
+
+        joinBtn.innerText = "Joined";
+        joinedUniversities.push(currentUniversityId);
+
+        // update joined indicator on card
+        const cardIndicator = document.querySelector(`[data-uni-id="${currentUniversityId}"] .card-joined-indicator`);
+        if (cardIndicator) cardIndicator.innerText = "Joined";
+      } else {
+        // prefer server message if available
+        const msg = data?.message || `Could not join (status ${res.status})`;
+        alert(msg);
+        joinBtn.innerText = "Join Community";
+        joinBtn.disabled = false;
+      }
+    } catch (err) {
+      console.error("Join fetch error:", err);
+      alert("Something went wrong while joining. See console for details.");
+      joinBtn.innerText = "Join Community";
+      joinBtn.disabled = false;
+    }
+  });
+
+  function updateCardCounts(universityId, alumnicount, studentcount) {
+    allUniversities.forEach(uni => {
+      if (uni.data._id === universityId) {
+        const card = uni.element.querySelector('.university-card');
+        const statNumbers = card.querySelectorAll('.stat-number');
+        if (statNumbers.length >= 2) {
+          if (alumnicount != null) {
+            statNumbers[0].innerText = alumnicount;
+            uni.data.alumnicount = alumnicount;
+          }
+          if (studentcount != null) {
+            statNumbers[1].innerText = studentcount;
+            uni.data.studentcount = studentcount;
+          }
+        }
+      }
+    });
+  }
+</script>

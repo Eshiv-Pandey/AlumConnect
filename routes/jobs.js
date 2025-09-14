@@ -6,6 +6,6 @@ const Jobs=require("../models/jobs");
 router.get("/",async (req,res)=>{
   let jobs=await Jobs.find({});
   res.render("jobs.ejs",{jobs});
-});
+});   
 
 module.exports=router;

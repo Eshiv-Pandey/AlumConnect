@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
     },
-    // Password is required only for local accounts
     password: {
       type: String,
       required: function () {
@@ -26,15 +25,19 @@ const userSchema = new mongoose.Schema(
     },
     name: { type: String, trim: true },
 
+    //  Changed: allow multiple universities as per our requirements
+    universities: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "University" }],
+      default: []
+    }
+    ,
+
     googleId: { type: String, index: true, sparse: true },
     githubId: { type: String, index: true, sparse: true },
-
-    // forgot-password support
     resetPasswordToken: String,
     resetPasswordExpires: Date,
   },
   { timestamps: true }
 );
 
-// Avoid OverwriteModelError in dev
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);
