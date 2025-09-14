@@ -1,7 +1,7 @@
 // routes/university.js
 const express = require("express");
 const router = express.Router();
-const University = require("../models/university"); // note lowercase filename you showed
+const University = require("../models/University"); // note lowercase filename you showed
 const User = require("../models/User");
 const auth = require("../middleware/auth");
 
