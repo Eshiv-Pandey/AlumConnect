@@ -40,6 +40,7 @@
                         "I've mentored 5 international students through AlumConnect. Helping them navigate campus life and career opportunities has been incredibly rewarding."
                       </div>
                       <br>
+                      <% if (user && user.loggedIn) { %>
                       <div class="row">
                         <div class="col-5">
                           <button class="btn btn-msg"><i class="fa-regular fa-envelope"></i> &nbsp;Message&nbsp;</button>
@@ -48,6 +49,7 @@
                           <button class="btn btn-primary btn-pfp"><i class="fa-regular fa-id-badge"></i> &nbsp;View Profile&nbsp;</button>
                         </div>
                     </div>
+                    <% } %>
                 </div>
             </div>
             

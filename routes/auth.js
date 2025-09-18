@@ -171,10 +171,11 @@ router.post("/forgot", async (req, res) => {
 
     user.resetPasswordToken = hashed;
     user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
-    await user.save({ validateBeforeSave: false }); // ✅ FIXED
+    await user.save({ validateBeforeSave: false });
 
+    // ✅ FIXED: removed duplicate "/auth"
     const resetURL =
-      (process.env.BASE_URL || "http://localhost:4000") + `/auth/reset/${rawToken}`;
+      (process.env.BASE_URL || "http://localhost:4000") + `/reset/${rawToken}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -183,8 +184,6 @@ router.post("/forgot", async (req, res) => {
         pass: process.env.EMAIL_PASS,
       },
     });
-
-    // EMAIL TEMPLATE //////
 
     await transporter.sendMail({
       from: `"AlumConnect" <${process.env.EMAIL_USER}>`,
