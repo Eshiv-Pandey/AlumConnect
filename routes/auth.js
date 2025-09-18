@@ -171,7 +171,7 @@ router.post("/forgot", async (req, res) => {
 
     user.resetPasswordToken = hashed;
     user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
-    await user.save();
+    await user.save({ validateBeforeSave: false }); // ✅ FIXED
 
     const resetURL =
       (process.env.BASE_URL || "http://localhost:4000") + `/auth/reset/${rawToken}`;
@@ -240,8 +240,6 @@ router.post("/forgot", async (req, res) => {
       </html>
       `,
     });
-    
-    
 
     return res.redirect(
       "/login?loginError=" + encodeURIComponent("Check your email for reset link")
