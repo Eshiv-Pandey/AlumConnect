@@ -207,4 +207,71 @@ router.post("/forgot", async (req, res) => {
   }
 });
 
+// ========== RESET PASSWORD ==========
+
+// Show reset form
+router.get("/reset/:token", async (req, res) => {
+  try {
+    const rawToken = req.params.token;
+    const hashed = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: hashed,
+      resetPasswordExpires: { $gt: Date.now() }, // not expired
+    });
+
+    if (!user) {
+      return res.redirect(
+        "/login?loginError=" +
+          encodeURIComponent("Reset link is invalid or has expired")
+      );
+    }
+
+    res.render("reset.ejs", { token: rawToken }); // show form
+  } catch (err) {
+    console.error(err);
+    res.redirect("/login?loginError=" + encodeURIComponent("Something went wrong"));
+  }
+});
+
+// Handle new password submission
+router.post("/reset/:token", async (req, res) => {
+  try {
+    const rawToken = req.params.token;
+    const hashed = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: hashed,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.redirect(
+        "/login?loginError=" +
+          encodeURIComponent("Reset link is invalid or has expired")
+      );
+    }
+
+    const { newpass, confirmpass } = req.body;
+    if (!newpass || newpass !== confirmpass) {
+      return res.redirect(`/auth/reset/${rawToken}?error=Passwords do not match`);
+    }
+
+    const bcrypt = require("bcrypt");
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newpass, salt);
+
+    // clear token fields
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.redirect("/login?loginError=" + encodeURIComponent("Password updated! Please login"));
+  } catch (err) {
+    console.error(err);
+    res.redirect("/login?loginError=" + encodeURIComponent("Could not reset password"));
+  }
+});
+
 module.exports = router;
