@@ -32,7 +32,6 @@ function signAndSetJwt(res, user, provider = "local") {
 }
 
 // ========== LOGIN PAGE ==========
-
 router.get("/login", (req, res) => {
   res.render("login", {
     loginError: req.query.loginError || null,
@@ -42,7 +41,6 @@ router.get("/login", (req, res) => {
 });
 
 // ========== LOCAL SIGNUP ==========
-
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
@@ -83,7 +81,6 @@ router.post("/signup", async (req, res) => {
 });
 
 // ========== LOCAL LOGIN ==========
-
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -150,16 +147,17 @@ router.get("/logout", (req, res) => {
 
 // ========== FORGOT PASSWORD ==========
 router.get("/forgot", (req, res) => {
-  res.render("forgot.ejs");
+  res.render("forgot.ejs", { error: null });
 });
 
 router.post("/forgot", async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email)
+    if (!email) {
       return res.redirect(
         "/login?loginError=" + encodeURIComponent("Email is required")
       );
+    }
 
     const user = await User.findOne({ email });
     if (!user) {
@@ -196,7 +194,7 @@ router.post("/forgot", async (req, res) => {
     });
 
     return res.redirect(
-      "/login?loginError=" + encodeURIComponent("Check your email")
+      "/login?loginError=" + encodeURIComponent("Check your email for reset link")
     );
   } catch (err) {
     console.error(err);
@@ -217,24 +215,24 @@ router.get("/reset/:token", async (req, res) => {
 
     const user = await User.findOne({
       resetPasswordToken: hashed,
-      resetPasswordExpires: { $gt: Date.now() }, // not expired
+      resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
       return res.redirect(
         "/login?loginError=" +
-          encodeURIComponent("Reset link is invalid or has expired")
+          encodeURIComponent("Reset link is invalid or expired")
       );
     }
 
-    res.render("reset.ejs", { token: rawToken }); // show form
+    res.render("reset.ejs", { token: rawToken, error: req.query.error || null });
   } catch (err) {
     console.error(err);
     res.redirect("/login?loginError=" + encodeURIComponent("Something went wrong"));
   }
 });
 
-// Handle new password submission
+// Handle new password
 router.post("/reset/:token", async (req, res) => {
   try {
     const rawToken = req.params.token;
@@ -247,8 +245,7 @@ router.post("/reset/:token", async (req, res) => {
 
     if (!user) {
       return res.redirect(
-        "/login?loginError=" +
-          encodeURIComponent("Reset link is invalid or has expired")
+        "/login?loginError=" + encodeURIComponent("Reset link is invalid or expired")
       );
     }
 
@@ -257,11 +254,9 @@ router.post("/reset/:token", async (req, res) => {
       return res.redirect(`/auth/reset/${rawToken}?error=Passwords do not match`);
     }
 
-    const bcrypt = require("bcrypt");
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newpass, salt);
 
-    // clear token fields
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
