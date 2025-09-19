@@ -87,6 +87,7 @@ app.use("/jobs", require("./routes/jobs"));
 app.use("/university", require("./routes/university"));
 app.use("/profile",require("./routes/profile"));
 app.use("/profile/editpassword", require("./routes/editpassword"));
+app.use("/profile/editprofile",require("./routes/editprofile"));
 
 // Root
 app.get("/", (req, res) => {
