@@ -8,14 +8,18 @@
       Build meaningful connections between university alumni and new students. Get mentorship, accommodation help, and insider knowledge about your university experience.
     </h4>
     <span class="eshiv">
-      <a href="/login">
-        <button class="btn btn-primary student"><i class="fa-regular fa-user" style="color: #ffffff;"></i> &nbsp;Join as Student</button>
-      </a>
+      <% if(!user.loggedIn){ %>
+        <a href="/login">
+          <button class="btn btn-primary student"><i class="fa-regular fa-user" style="color: #ffffff;"></i> &nbsp;Join as Student</button>
+        </a>
+        
+        <a href="/login">
+          <button class="btn btn-outline-primary alumni"><i class="fa-solid fa-graduation-cap fa-flip-horizontal"></i> &nbsp;Register as Alumni</button>
+        </a>
+      <% } %>
       
-      <a href="/login">
-        <button class="btn btn-outline-primary alumni"><i class="fa-solid fa-graduation-cap fa-flip-horizontal"></i> &nbsp;Register as Alumni</button>
-      </a>
-      <h1>...</h1>
+
+
     </span>
   </div>
   <div class="col-lg-4 col-12-md">
@@ -40,7 +44,6 @@
                         "I've mentored 5 international students through AlumConnect. Helping them navigate campus life and career opportunities has been incredibly rewarding."
                       </div>
                       <br>
-                      <% if (user && user.loggedIn) { %>
                       <div class="row">
                         <div class="col-5">
                           <button class="btn btn-msg"><i class="fa-regular fa-envelope"></i> &nbsp;Message&nbsp;</button>
@@ -49,7 +52,6 @@
                           <button class="btn btn-primary btn-pfp"><i class="fa-regular fa-id-badge"></i> &nbsp;View Profile&nbsp;</button>
                         </div>
                     </div>
-                    <% } %>
                 </div>
             </div>
             
