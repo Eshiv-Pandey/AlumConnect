@@ -1,3 +1,4 @@
+// routes/auth.js
 const express = require("express");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
@@ -88,14 +89,16 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user || !user.password) {
       return res.redirect(
-        "/login?mode=login&loginError=" + encodeURIComponent("Invalid credentials")
+        "/login?mode=login&loginError=" +
+          encodeURIComponent("Invalid credentials")
       );
     }
 
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
       return res.redirect(
-        "/login?mode=login&loginError=" + encodeURIComponent("Invalid credentials")
+        "/login?mode=login&loginError=" +
+          encodeURIComponent("Invalid credentials")
       );
     }
 
@@ -173,9 +176,9 @@ router.post("/forgot", async (req, res) => {
     user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
     await user.save({ validateBeforeSave: false });
 
-    // ✅ FIXED: removed duplicate "/auth"
+    // ✅ FIXED: URL must match "/auth/reset/:token"
     const resetURL =
-      (process.env.BASE_URL || "http://localhost:4000") + `/reset/${rawToken}`;
+      (process.env.BASE_URL || "http://localhost:4000") + `/auth/reset/${rawToken}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -192,52 +195,34 @@ router.post("/forgot", async (req, res) => {
       html: `
       <!DOCTYPE html>
       <html>
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        </head>
-        <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f4f4">
+        <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
+        <body style="margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f4f4f4;">
+          <table width="100%" bgcolor="#f4f4f4">
             <tr>
               <td align="center" style="padding:40px 20px;">
-                <table width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" 
-                       style="border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                  <!-- Header -->
-                  <tr>
-                    <td align="center" bgcolor="#1a73e8" style="padding:20px;">
-                      <h1 style="color:#ffffff; margin:0; font-size:24px;">AlumConnect</h1>
-                    </td>
-                  </tr>
-                  <!-- Body -->
-                  <tr>
-                    <td style="padding:30px; color:#333333; font-size:16px; line-height:1.6;">
-                      <p style="margin-top:0;">Hello,</p>
-                      <p>You requested a password reset for your AlumConnect account. Click the button below to reset your password:</p>
-                      <p style="text-align:center; margin:30px 0;">
-                        <a href="${resetURL}" 
-                           style="background-color:#1a73e8; color:#ffffff; text-decoration:none; 
-                                  padding:12px 24px; border-radius:4px; font-size:16px; display:inline-block;">
-                          Reset Password
-                        </a>
-                      </p>
-                      <p>If the button doesn't work, copy and paste this link into your browser:</p>
-                      <p style="word-break:break-all; color:#1a73e8;">${resetURL}</p>
-                      <p style="margin-bottom:0;">This link will expire in 1 hour.</p>
-                    </td>
-                  </tr>
-                  <!-- Footer -->
-                  <tr>
-                    <td bgcolor="#f4f4f4" style="padding:20px; text-align:center; font-size:12px; color:#888888;">
-                      <p style="margin:0;">&copy; ${new Date().getFullYear()} AlumConnect. All rights reserved.</p>
-                    </td>
-                  </tr>
+                <table width="600" bgcolor="#ffffff" style="border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                  <tr><td align="center" bgcolor="#1a73e8" style="padding:20px;">
+                    <h1 style="color:#fff;margin:0;font-size:24px;">AlumConnect</h1>
+                  </td></tr>
+                  <tr><td style="padding:30px;color:#333;font-size:16px;line-height:1.6;">
+                    <p>Hello,</p>
+                    <p>You requested a password reset. Click below:</p>
+                    <p style="text-align:center;margin:30px 0;">
+                      <a href="${resetURL}" style="background:#1a73e8;color:#fff;padding:12px 24px;border-radius:4px;text-decoration:none;">Reset Password</a>
+                    </p>
+                    <p>If button doesn't work, copy link:</p>
+                    <p style="word-break:break-all;color:#1a73e8;">${resetURL}</p>
+                    <p>This link expires in 1 hour.</p>
+                  </td></tr>
+                  <tr><td bgcolor="#f4f4f4" style="padding:20px;text-align:center;font-size:12px;color:#888;">
+                    <p>&copy; ${new Date().getFullYear()} AlumConnect. All rights reserved.</p>
+                  </td></tr>
                 </table>
               </td>
             </tr>
           </table>
         </body>
-      </html>
-      `,
+      </html>`,
     });
 
     return res.redirect(
@@ -246,14 +231,12 @@ router.post("/forgot", async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.redirect(
-      "/login?loginError=" +
-        encodeURIComponent("Could not send reset email. Try again.")
+      "/login?loginError=" + encodeURIComponent("Could not send reset email. Try again.")
     );
   }
 });
 
 // ========== RESET PASSWORD ==========
-
 // Show reset form
 router.get("/reset/:token", async (req, res) => {
   try {
@@ -267,8 +250,7 @@ router.get("/reset/:token", async (req, res) => {
 
     if (!user) {
       return res.redirect(
-        "/login?loginError=" +
-          encodeURIComponent("Reset link is invalid or expired")
+        "/login?loginError=" + encodeURIComponent("Reset link is invalid or expired")
       );
     }
 
@@ -303,7 +285,6 @@ router.post("/reset/:token", async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newpass, salt);
-
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
